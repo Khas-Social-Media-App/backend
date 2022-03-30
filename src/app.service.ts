@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHome(): { message: string } {
     return {
-      message: 'Welcome To The Smesh API !',
+      message: 'Welcome To The Khas Social Media API !',
     };
   }
 }
