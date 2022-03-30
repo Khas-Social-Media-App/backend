@@ -1,5 +1,12 @@
 // eslint-disable-next-line max-classes-per-file
-import { IsString, IsPhoneNumber, IsEmail, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsPhoneNumber,
+  IsEmail,
+  IsOptional,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class RegisterDto {
@@ -7,6 +14,8 @@ export class RegisterDto {
   email: string;
 
   @IsString()
+  @MaxLength(20)
+  @MinLength(6)
   password: string;
 
   @IsString()
@@ -17,4 +26,7 @@ export class RegisterDto {
 
   @IsString()
   username: string;
+
+  @IsString()
+  favoriteLanguage: string;
 }

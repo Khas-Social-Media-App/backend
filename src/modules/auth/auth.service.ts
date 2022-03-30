@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -28,13 +28,13 @@ export class AuthService {
       registerDto.password.length < 6 ||
       !registerDto.lastName
     ) {
-      throw new Error('Missing required fields');
+      throw new BadRequestException('Missing required fields');
     }
 
     const isExist = await this.userModel.findOne({ email: registerDto.email });
 
     if (isExist) {
-      throw new Error('User already exist');
+      throw new BadRequestException('User already exist');
     }
 
     const hashed = await bcrypt.hash(registerDto.password, 10);
@@ -42,8 +42,10 @@ export class AuthService {
     const user = new this.userModel({
       email: registerDto.email,
       password: hashed,
+      username: registerDto.username,
       firstName: registerDto.firstName,
       lastName: registerDto.lastName,
+      favoriteLanguage: registerDto.favoriteLanguage,
     });
 
     await user.save();
@@ -51,7 +53,10 @@ export class AuthService {
     const payload = { email: user.email, _id: user._id };
 
     return {
-      user,
+      user: {
+        ...user.toObject(),
+        password: undefined,
+      },
       accessToken: this.jwtService.sign(payload),
     };
   }
@@ -60,19 +65,22 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: loginDto.email });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new BadRequestException('User not found');
     }
 
     const isMatch = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isMatch) {
-      throw new Error('Password is incorrect');
+      throw new BadRequestException('Password is incorrect');
     }
 
     const payload = { email: user.email, _id: user._id };
 
     return {
-      user,
+      user: {
+        ...user.toObject(),
+        password: undefined,
+      },
       accessToken: this.jwtService.sign(payload),
     };
   }
