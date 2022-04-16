@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Document } from 'mongoose';
+import { Comment, CommentSchema } from './comment.schema';
+import { User } from './user.schema';
 
 @Schema({
   timestamps: true,
 })
-export class Post {
+export class UserPost {
   @Prop({
     type: String,
     required: true,
@@ -14,15 +16,22 @@ export class Post {
 
   @Prop({
     type: Array,
+    ref: 'User',
     default: [],
   })
-  likes: Array<any>;
+  likes: Array<User>;
 
   @Prop({
-    type: Array,
+    ref: 'User',
+    type: mongoose.Schema.Types.ObjectId,
+  })
+  owner: User;
+
+  @Prop({
+    type: [CommentSchema],
     default: [],
   })
-  comments: Array<any>;
+  comments: mongoose.Types.Array<Comment>;
 
   @Prop({
     type: String,
@@ -30,8 +39,8 @@ export class Post {
   image: string;
 }
 
-export type PostDocument = Post & Document;
+export type UserPostDocument = UserPost & Document;
 
-const PostSchema = SchemaFactory.createForClass(Post);
+const UserPostSchema = SchemaFactory.createForClass(UserPost);
 
-export { PostSchema };
+export { UserPostSchema };
