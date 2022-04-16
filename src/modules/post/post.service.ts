@@ -29,21 +29,25 @@ export class PostService {
   }
 
   updatePost(userId: ObjectId, postId: ObjectId, updatePostDto: UpdatePostDto) {
-    return this.userPostModel.findOneAndUpdate(
-      {
-        _id: postId,
-        owner: userId,
-      },
-      updatePostDto,
-      { new: true },
-    );
+    return this.userPostModel
+      .findOneAndUpdate(
+        {
+          _id: postId,
+          owner: userId,
+        },
+        updatePostDto,
+        { new: true },
+      )
+      .lean();
   }
 
   deletePost(userId: ObjectId, postId: ObjectId) {
-    return this.userPostModel.findOneAndDelete({
-      _id: postId,
-      owner: userId,
-    });
+    return this.userPostModel
+      .findOneAndDelete({
+        _id: postId,
+        owner: userId,
+      })
+      .lean();
   }
 
   async uploadImageToCloudinary(file: Express.Multer.File) {
@@ -53,64 +57,72 @@ export class PostService {
   }
 
   likePost(userId: ObjectId, postId: ObjectId) {
-    return this.userPostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $addToSet: {
-          likes: userId,
+    return this.userPostModel
+      .findOneAndUpdate(
+        {
+          _id: postId,
         },
-      },
-      { new: true },
-    );
+        {
+          $addToSet: {
+            likes: userId,
+          },
+        },
+        { new: true },
+      )
+      .lean();
   }
 
   unlikePost(userId: ObjectId, postId: ObjectId) {
-    return this.userPostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $pull: {
-          likes: userId,
+    return this.userPostModel
+      .findOneAndUpdate(
+        {
+          _id: postId,
         },
-      },
-      { new: true },
-    );
+        {
+          $pull: {
+            likes: userId,
+          },
+        },
+        { new: true },
+      )
+      .lean();
   }
 
   addComment(userId: ObjectId, postId: ObjectId, comment: string) {
-    return this.userPostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $addToSet: {
-          comments: {
-            owner: userId,
-            comment: comment,
+    return this.userPostModel
+      .findOneAndUpdate(
+        {
+          _id: postId,
+        },
+        {
+          $addToSet: {
+            comments: {
+              owner: userId,
+              comment: comment,
+            },
           },
         },
-      },
-      { new: true },
-    );
+        { new: true },
+      )
+      .lean();
   }
 
   removeComment(userId: ObjectId, postId: ObjectId, commentId: ObjectId) {
-    return this.userPostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $pull: {
-          comments: {
-            _id: commentId,
-            owner: userId,
+    return this.userPostModel
+      .findOneAndUpdate(
+        {
+          _id: postId,
+        },
+        {
+          $pull: {
+            comments: {
+              _id: commentId,
+              owner: userId,
+            },
           },
         },
-      },
-      { new: true },
-    );
+        { new: true },
+      )
+      .lean();
   }
 }
