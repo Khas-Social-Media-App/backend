@@ -24,11 +24,20 @@ import { CommentDto } from 'src/dtos/add-comment.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Get('get-users-all-posts')
-  getUsersAllPosts(@CurrentUser() currentUser) {
-    return this.postService.getUsersAllPosts(currentUser._id);
+  @Get('all-posts')
+  getAllPosts() {
+    return this.postService.getAllPosts();
   }
 
+  @Get('get-users-all-posts')
+  getUsersAllPosts(@CurrentUser() currentUser) {
+    return this.postService.getFollowingUsersPosts(currentUser._id);
+  }
+
+  @Get('get-following-users-posts')
+  getFollowingUsersPosts(@CurrentUser() currentUser) {
+    return this.postService.getFollowingUsersPosts(currentUser._id);
+  }
   @Post('create-post')
   createPost(@CurrentUser() currentUser, @Body() createPostDto: CreatePostDto) {
     return this.postService.createPost(currentUser._id, createPostDto);
