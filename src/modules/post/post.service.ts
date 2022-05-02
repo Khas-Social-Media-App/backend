@@ -120,8 +120,8 @@ export class PostService {
       .lean();
   }
 
-  addComment(userId: ObjectId, postId: ObjectId, comment: string) {
-    return this.userPostModel
+  async addComment(userId: ObjectId, postId: ObjectId, comment: string) {
+    const post = await this.userPostModel
       .findOneAndUpdate(
         {
           _id: postId,
@@ -137,6 +137,10 @@ export class PostService {
         { new: true },
       )
       .lean();
+
+    post.comments = post.comments.reverse();
+
+    return post;
   }
 
   removeComment(userId: ObjectId, postId: ObjectId, commentId: ObjectId) {

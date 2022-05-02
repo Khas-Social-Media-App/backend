@@ -16,23 +16,10 @@ export class User {
     type: String,
     required: true,
   })
-  password: string;
+  displayName: string;
 
   @Prop({
     type: String,
-    required: true,
-  })
-  firstName: string;
-
-  @Prop({
-    type: String,
-    required: true,
-  })
-  lastName: string;
-
-  @Prop({
-    type: String,
-    required: true,
     unique: true,
   })
   username: string;
@@ -51,8 +38,25 @@ export class User {
 
   @Prop({
     type: String,
+    required: true,
   })
-  profilePicture: string;
+  githubUid: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  githubToken: string;
+
+  @Prop({
+    type: String,
+  })
+  photoURL: string;
+
+  @Prop({
+    type: String,
+  })
+  title: string;
 
   @Prop({
     enum: [
@@ -72,7 +76,6 @@ export class User {
       'Objective-C',
       'Other',
     ],
-    required: true,
   })
   favoriteLanguage: favoriteLanguageEnum;
 }
