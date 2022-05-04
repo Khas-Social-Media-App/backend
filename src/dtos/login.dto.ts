@@ -6,5 +6,14 @@ export class LoginDto {
   email: string;
 
   @IsString()
-  password: string;
+  githubToken: string;
+
+  @IsString()
+  displayName: string;
+
+  @IsString()
+  photoURL: string;
+
+  @IsString()
+  githubUid: string;
 }
