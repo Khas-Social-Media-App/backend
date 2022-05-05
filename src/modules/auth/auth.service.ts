@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { generateFromEmail } from 'unique-username-generator';
 import { RegisterDto } from 'src/dtos/register.dto';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
@@ -60,11 +61,15 @@ export class AuthService {
   // }
 
   async login(loginDto: LoginDto) {
+    console.log(loginDto);
     const user = await this.userModel.findOne({ email: loginDto.email });
 
     if (!user) {
+      const username = generateFromEmail(loginDto.email, 3);
+
       const newUser = await this.userModel.create({
         email: loginDto.email,
+        username,
         displayName: loginDto.displayName,
         githubToken: loginDto.githubToken,
         photoURL: loginDto.photoURL,

@@ -14,7 +14,6 @@ export class User {
 
   @Prop({
     type: String,
-    required: true,
   })
   displayName: string;
 

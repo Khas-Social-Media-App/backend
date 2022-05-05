@@ -1,4 +1,4 @@
-import { Controller, Param, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/decorators/current-user';
 import { ObjectId, ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -25,5 +25,10 @@ export class UserController {
     @CurrentUser() currentUser,
   ) {
     return this.userService.unfollowUser(followedPersonId, currentUser._id);
+  }
+
+  @Get('get-following-users')
+  getFollowingUsers(@CurrentUser() currentUser) {
+    return this.userService.getFollowingUsers(currentUser._id);
   }
 }

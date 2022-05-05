@@ -73,4 +73,16 @@ export class UserService {
 
     return user;
   }
+
+  async getFollowingUsers(userId: ObjectId) {
+    const user = await this.userModel.findById(userId).lean();
+
+    const followingUsers = await this.userModel
+      .find({
+        _id: { $in: user.following },
+      })
+      .lean();
+
+    return followingUsers;
+  }
 }
