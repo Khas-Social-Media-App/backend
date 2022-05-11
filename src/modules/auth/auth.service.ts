@@ -69,11 +69,9 @@ export class AuthService {
 
       const newUser = await this.userModel.create({
         email: loginDto.email,
-        username,
+        username: loginDto.username !== null ? loginDto.username : username,
         displayName: loginDto.displayName,
-        githubToken: loginDto.githubToken,
         photoURL: loginDto.photoURL,
-        githubUid: loginDto.githubUid,
       });
 
       const payload = { email: newUser.email, _id: newUser._id };

@@ -7,7 +7,6 @@ import { Document } from 'mongoose';
 export class User {
   @Prop({
     type: String,
-    required: true,
     unique: true,
   })
   email: string;
@@ -34,18 +33,6 @@ export class User {
     default: [],
   })
   following: Array<string>;
-
-  @Prop({
-    type: String,
-    required: true,
-  })
-  githubUid: string;
-
-  @Prop({
-    type: String,
-    required: true,
-  })
-  githubToken: string;
 
   @Prop({
     type: String,
