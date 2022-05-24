@@ -23,9 +23,17 @@ export class PostService {
   }
 
   getUsersAllPosts(userId: ObjectId) {
-    return this.userPostModel.find({
-      owner: userId,
-    });
+    return this.userPostModel
+      .find({
+        owner: userId,
+      })
+      .populate('owner')
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
+  getUsersAllPostsCount(userId: ObjectId) {
+    return this.userPostModel.find({ owner: userId }).countDocuments();
   }
 
   async getFollowingUsersPosts(userId: ObjectId) {

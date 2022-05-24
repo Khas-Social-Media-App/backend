@@ -31,7 +31,12 @@ export class PostController {
 
   @Get('get-users-all-posts')
   getUsersAllPosts(@CurrentUser() currentUser) {
-    return this.postService.getFollowingUsersPosts(currentUser._id);
+    return this.postService.getUsersAllPosts(currentUser._id);
+  }
+
+  @Get('get-users-all-posts-count')
+  getUsersAllPostsCount(@CurrentUser() currentUser) {
+    return this.postService.getUsersAllPostsCount(currentUser._id);
   }
 
   @Get('get-following-users-posts')

@@ -1,13 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import UpdateUserDto from 'src/dtos/update-user.dto';
 import { ObjectId } from 'src/pipes/parse-object-id.pipe';
+import { UserPost, UserPostDocument } from 'src/schemas/post.schema';
 import { User, UserDocument } from 'src/schemas/user.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(UserPost.name)
+    private readonly userPostModel: Model<UserPostDocument>,
   ) {}
 
   async pushFollowers(userId: ObjectId, followedPersonId: ObjectId) {
@@ -25,10 +29,10 @@ export class UserService {
   }
 
   async followUser(followedPersonId: ObjectId, userId: ObjectId) {
-    const user = await this.userModel.findById(userId);
+    const myUser = await this.userModel.findById(userId);
 
     if (
-      user.following
+      myUser.following
         .map((id) => id.toString())
         .includes(followedPersonId.toString())
     ) {
@@ -39,13 +43,13 @@ export class UserService {
       throw new BadRequestException('You can not follow yourself');
     }
 
-    await user
+    await myUser
       .updateOne({ $addToSet: { following: followedPersonId } }, { new: true })
       .lean();
 
     await this.pushFollowers(userId, followedPersonId);
 
-    return user;
+    return myUser;
   }
 
   async unfollowUser(followedPersonId: ObjectId, userId: ObjectId) {
@@ -63,7 +67,7 @@ export class UserService {
       .updateOne({ $pull: { following: followedPersonId } }, { new: true })
       .lean();
 
-    await this.userModel
+    const newUser = await this.userModel
       .findByIdAndUpdate(
         followedPersonId,
         { $pull: { followers: userId } },
@@ -71,7 +75,7 @@ export class UserService {
       )
       .lean();
 
-    return user;
+    return newUser;
   }
 
   async getFollowingUsers(userId: ObjectId) {
@@ -84,5 +88,52 @@ export class UserService {
       .lean();
 
     return followingUsers;
+  }
+
+  async getSingleUser(userId: ObjectId) {
+    const user = await this.userModel.findById(userId).lean();
+
+    const userPosts = await this.userPostModel
+      .find({
+        owner: userId,
+      })
+      .populate('owner')
+      .lean();
+
+    return {
+      userInfo: user,
+      posts: userPosts,
+    };
+  }
+
+  async searchUsers(text: string, page: number) {
+    const regex = new RegExp(`^(${text.split(' ').join('|')})`, 'i');
+
+    const users = await this.userModel
+      .find({
+        $or: [
+          {
+            displayName: regex,
+          },
+
+          {
+            title: regex,
+          },
+          {
+            username: regex,
+          },
+        ],
+      })
+      .skip(page * 15)
+      .limit(15)
+      .lean();
+
+    return users;
+  }
+
+  updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.findByIdAndUpdate(userId, updateUserDto, {
+      new: true,
+    });
   }
 }
