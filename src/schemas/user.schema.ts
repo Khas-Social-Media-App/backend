@@ -13,6 +13,12 @@ export class User {
 
   @Prop({
     type: String,
+    unique: true,
+  })
+  githubId: string;
+
+  @Prop({
+    type: String,
   })
   displayName: string;
 

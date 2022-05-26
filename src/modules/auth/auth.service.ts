@@ -61,13 +61,22 @@ export class AuthService {
   // }
 
   async login(loginDto: LoginDto) {
-    const user = await this.userModel.findOne({ email: loginDto.email });
+    const user = await this.userModel
+      .findOne({
+        $or: [
+          { email: loginDto.email },
+          { username: loginDto.username },
+          { githubId: loginDto.githubId },
+        ],
+      })
+      .lean();
 
     if (!user) {
       const username = generateFromEmail(loginDto.email, 3);
 
       const newUser = await this.userModel.create({
         email: loginDto.email,
+        githubId: loginDto.githubId,
         username: loginDto.username !== null ? loginDto.username : username,
         displayName: loginDto.displayName,
         photoURL: loginDto.photoURL,

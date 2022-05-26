@@ -10,6 +10,9 @@ export class LoginDto {
   username: string;
 
   @IsString()
+  githubId: string;
+
+  @IsString()
   @IsOptional()
   displayName: string;
 
