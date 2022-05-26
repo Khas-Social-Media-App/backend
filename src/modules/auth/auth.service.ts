@@ -61,15 +61,13 @@ export class AuthService {
   // }
 
   async login(loginDto: LoginDto) {
-    const user = await this.userModel
-      .findOne({
-        $or: [
-          { email: loginDto.email },
-          { username: loginDto.username },
-          { githubId: loginDto.githubId },
-        ],
-      })
-      .lean();
+    const user = await this.userModel.findOne({
+      $or: [
+        { email: loginDto.email },
+        { username: loginDto.username },
+        { githubId: loginDto.githubId },
+      ],
+    });
 
     if (!user) {
       const username = generateFromEmail(loginDto.email, 3);
