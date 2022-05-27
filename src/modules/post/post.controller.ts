@@ -43,6 +43,7 @@ export class PostController {
   getFollowingUsersPosts(@CurrentUser() currentUser) {
     return this.postService.getFollowingUsersPosts(currentUser._id);
   }
+
   @Post('create-post')
   createPost(@CurrentUser() currentUser, @Body() createPostDto: CreatePostDto) {
     return this.postService.createPost(currentUser._id, createPostDto);

@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostModule } from './modules/post/post.module';
 import { UserModule } from './modules/user/user.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     PostModule,
     UserModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -69,18 +69,18 @@ export class AuthService {
       ],
     });
 
-    if (!user) {
-      const username = generateFromEmail(loginDto.email, 3);
 
+
+    if (user === null) {
       const newUser = await this.userModel.create({
         email: loginDto.email,
         githubId: loginDto.githubId,
-        username: loginDto.username !== null ? loginDto.username : username,
+        username: loginDto.username !== null ? loginDto.username : '',
         displayName: loginDto.displayName,
         photoURL: loginDto.photoURL,
       });
 
-      const payload = { email: newUser.email, _id: newUser._id };
+      const payload = { email: newUser.username, _id: newUser._id };
 
       return {
         user: {
@@ -97,7 +97,7 @@ export class AuthService {
     //   throw new BadRequestException('Password is incorrect');
     // }
 
-    const payload = { email: user.email, _id: user._id };
+    const payload = { email: user.username, _id: user._id };
 
     return {
       user: {

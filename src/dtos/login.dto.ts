@@ -1,15 +1,16 @@
 // eslint-disable-next-line max-classes-per-file
-import { IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsNumber } from 'class-validator';
 
 export class LoginDto {
   @IsEmail()
+  @IsOptional()
   email: string;
 
   @IsString()
   @IsOptional()
   username: string;
 
-  @IsString()
+  @IsNumber()
   githubId: string;
 
   @IsString()

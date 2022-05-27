@@ -1,11 +1,21 @@
-import { IsString, IsUrl, Max, Min } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreatePostDto {
-  @Max(140)
-  @Min(1)
+  @IsString()
+  @MaxLength(280)
+  @MinLength(1)
   content: string;
 
   @IsString()
   @IsUrl()
+  @IsOptional()
   image?: string;
 }

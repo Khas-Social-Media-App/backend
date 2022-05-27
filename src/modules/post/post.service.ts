@@ -7,12 +7,14 @@ import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreatePostDto } from '../../dtos/create-post.dto';
 import { UpdatePostDto } from '../../dtos/update-post.dto';
 import { MediaService } from '../media/media.service';
+import { AppGateway } from '../websocket/websocket.gateway';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel(UserPost.name)
     private readonly userPostModel: Model<UserPostDocument>,
+    private readonly websocketGateway: AppGateway,
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
     private readonly media: MediaService,
@@ -62,6 +64,16 @@ export class PostService {
     });
 
     postCreate = await postCreate.populate('owner');
+
+    const user = await this.userModel.findById(userId).lean();
+
+    const followers = user.followers;
+
+    followers.forEach(async (follower) => {
+      this.websocketGateway.server
+        .to(`user_room:${follower}`)
+        .emit('POST', { post: postCreate });
+    });
 
     return postCreate;
   }
