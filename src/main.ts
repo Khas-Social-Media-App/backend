@@ -18,9 +18,10 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new AllExceptionsFilter(config));
 
-  if (process.env.NODE_ENV === 'production') {
-    app.useWebSocketAdapter(new RedisIoAdapter(app, config));
-  }
+  // const redisIoAdapter = new RedisIoAdapter(app, config);
+  // await redisIoAdapter.connectToRedis();
+
+  // app.useWebSocketAdapter(redisIoAdapter);
 
   await app.listen(process.env.PORT || 3000);
 }
