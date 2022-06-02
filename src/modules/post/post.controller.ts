@@ -89,6 +89,11 @@ export class PostController {
     return this.postService.unlikePost(currentUser._id, postId);
   }
 
+  @Get('get-comments/:postId')
+  getComments(@Param('postId', new ParseObjectIdPipe()) postId: ObjectId) {
+    return this.postService.getComments(postId);
+  }
+
   @Post('add-comment/:postId')
   addComment(
     @Param('postId', new ParseObjectIdPipe()) postId: ObjectId,

@@ -140,6 +140,15 @@ export class PostService {
       .lean();
   }
 
+  async getComments(postId: ObjectId) {
+    const post = await this.userPostModel
+      .findById(postId)
+      .populate('comments.owner', '_id username photoURL displayName')
+      .lean();
+
+    return post.comments.reverse();
+  }
+
   async addComment(userId: ObjectId, postId: ObjectId, comment: string) {
     const post = await this.userPostModel
       .findOneAndUpdate(
@@ -156,6 +165,7 @@ export class PostService {
         },
         { new: true },
       )
+      .populate('comments.owner', '_id username photoURL displayName')
       .lean();
 
     post.comments = post.comments.reverse();
